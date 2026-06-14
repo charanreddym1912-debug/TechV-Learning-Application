@@ -1,1 +1,19 @@
 # TechV-Learning-Application
+
+Title
+
+Enterprise Learning Management System (LMS) with Integrated Virtual Classroom, Role-Based Access Control, and Cloud-Native Deployment
+Abstract
+
+The Enterprise Learning Management System (LMS) is a modern, scalable, and secure web-based platform designed to streamline the management, delivery, and monitoring of online and instructor-led training programs. The system provides a centralised environment where coordinators, trainers, and students can interact efficiently through course management, virtual classrooms, attendance tracking, assignment submissions, grading, and performance analytics.
+
+The application is developed using a modern full-stack architecture consisting of Java 17 and Spring Boot 3.x for the backend services, React 18 with TypeScript and Tailwind CSS for the frontend user interface, and MySQL 8.x as the relational database management system. The platform follows a microservice-ready, containerized deployment model using Docker and supports automated build, test, and deployment pipelines through GitHub Actions CI/CD workflows.
+
+A key feature of the system is the seamless integration of the Zoom Embedded Web SDK, enabling live virtual classes directly within the LMS interface. Trainers can schedule and conduct online sessions, while students can join classes without leaving the application. The backend securely generates Zoom meeting signatures and manages authentication using Zoom Server-to-Server OAuth credentials.
+The system implements Role-Based Access Control (RBAC) using Spring Security and JWT authentication mechanisms. Three primary user roles are supported:
+
+•	Coordinator – Manages courses, batches, trainers, students, and schedules training sessions. 
+•	Trainer – Conducts classes, records attendance, creates assignments, evaluates submissions, and publishes grades. 
+•	Student – Accesses learning materials, attends live classes, uploads assignments, tracks attendance, and views academic progress. 
+
+The platform also supports secure file uploads for assignment submissions, attendance monitoring, grading workflows, course lifecycle management, and performance reporting. The backend includes comprehensive unit testing using JUnit 5 and Mockito, ensuring application reliability and maintainability.
