@@ -1,0 +1,28 @@
+# Environment configurations
+.env
+*.env
+Backend/.env
+Frontend/.env
+
+# macOS system files
+.DS_Store
+
+# IDE and Editor files
+.idea/
+.vscode/
+*.iml
+*.iws
+*.sublime-project
+*.sublime-workspace
+
+# Maven build outputs
+Backend/target/
+**/target/
+*.class
+
+# Node / Frontend build outputs
+Frontend/node_modules/
+Frontend/dist/
+**/node_modules/
+**/dist/
+package-lock.json
