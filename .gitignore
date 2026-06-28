@@ -1,0 +1,12 @@
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.vite
+node_modules
+dist
+target
+*.log
