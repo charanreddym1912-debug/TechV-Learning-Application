@@ -1,6 +1,6 @@
 # Enterprise LMS — Frontend From Scratch
 
-A team of 3 is building the React 18 + TypeScript + Tailwind CSS frontend for the Enterprise LMS from scratch inside `/Users/avulaajaykumarreddy/Developer/LMSLocal`.
+A team of 3 is building the React 17 + TypeScript + Tailwind CSS frontend for the Enterprise LMS from scratch inside `/Users/avulaajaykumarreddy/Developer/LMSLocal`.
 
 ---
 
