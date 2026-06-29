@@ -5,6 +5,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import ProtectedRoute from '../components/auth/ProtectedRoute';
 import DashboardLayout from '../components/common/DashboardLayout';
 import LoginPage from '../pages/auth/LoginPage';
+import SignupPage from '../pages/auth/SignupPage';
 
 // Coordinator Pages
 import CoordinatorDashboard from '../pages/coordinator/Dashboard';
@@ -32,7 +33,8 @@ const AppRouter: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public */}
+        {/* Public Auth Routes */}
+        <Route path="/signup" element={<SignupPage />} />
         <Route path="/login" element={<LoginPage />} />
 
         {/* ── Coordinator Routes ─────────────────────────────────────── */}
@@ -70,14 +72,14 @@ const AppRouter: React.FC = () => {
         </Route>
 
         {/* ── Fallbacks ──────────────────────────────────────────────── */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<Navigate to="/signup" replace />} />
         <Route path="*" element={
           <div className="min-h-screen flex items-center justify-center bg-gray-50">
             <div className="text-center">
               <h1 className="text-6xl font-bold text-gray-300">404</h1>
               <p className="text-gray-500 mt-2">Page not found</p>
-              <a href="/login" className="text-primary-600 hover:underline text-sm mt-4 inline-block">
-                Go to Login
+              <a href="/signup" className="text-primary-600 hover:underline text-sm mt-4 inline-block font-medium">
+                Go to Sign Up
               </a>
             </div>
           </div>
