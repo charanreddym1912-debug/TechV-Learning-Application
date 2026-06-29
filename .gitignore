@@ -1,12 +1,37 @@
-.idea
+# Environment configurations
+.env
+*.env
+Backend/.env
+Frontend/.env
+
+# macOS system files
 .DS_Store
+
+# IDE and Editor files
+.idea/
+.vscode/
+*.iml
+*.iws
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-.vite
-node_modules
-dist
-target
+*.sublime-project
+*.sublime-workspace
+
+# Maven build outputs
+Backend/target/
+**/target/
+target/
+*.class
+
+# Node / Frontend build outputs
+.vite/
+Frontend/node_modules/
+Frontend/dist/
+**/node_modules/
+**/dist/
+node_modules/
+dist/
 *.log
