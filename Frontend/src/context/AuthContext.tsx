@@ -14,7 +14,7 @@ interface AuthState {
 
 interface AuthContextType extends AuthState {
   login: (credentials: LoginRequest) => Promise<void>;
-  signup: (userData: { fullName: string; email: string; role: Role; idNumber?: string }) => Promise<void>;
+  signup: (userData: { fullName: string; email: string; role: Role; idNumber?: string; [key: string]: any }) => Promise<void>;
   logout: () => void;
   loading: boolean;
 }
@@ -83,7 +83,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  const signup = useCallback(async (userData: { fullName: string; email: string; role: Role; idNumber?: string }) => {
+  const signup = useCallback(async (userData: { fullName: string; email: string; role: Role; idNumber?: string; [key: string]: any }) => {
     // Simulate API delay for realism
     await new Promise((resolve) => setTimeout(resolve, 600));
 
