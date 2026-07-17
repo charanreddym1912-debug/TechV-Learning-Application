@@ -6,6 +6,11 @@ import {
   Clock,
   ExternalLink,
 } from 'lucide-react';
+import {
+  SecondaryButton,
+  StatusBadge,
+  ZoomButton,
+} from '../../components/trainer/TrainerUI';
 
 interface TrainerClass {
   id: number;
@@ -68,56 +73,47 @@ const MyClasses: React.FC = () => {
     );
   };
 
-  const getStatusStyle = (status: TrainerClass['status']) => {
-    if (status === 'Scheduled') {
-      return 'bg-blue-50 text-blue-600';
-    }
-
-    if (status === 'Completed') {
-      return 'bg-green-50 text-green-600';
-    }
-
-    return 'bg-red-50 text-red-600';
-  };
-
   return (
-    <div>
-      <div className="mb-8">
+    <div className="space-y-8">
+      <div>
         <h1 className="text-2xl font-bold text-gray-800">
           My Classes
         </h1>
 
         <p className="mt-1 text-gray-500">
-          View scheduled classes and join Zoom meetings
+          View scheduled classes and launch Zoom classrooms.
         </p>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
-        <div className="border-b p-6">
+      <div className="overflow-hidden rounded-3xl border border-white/20 bg-white/95 shadow-2xl backdrop-blur-xl">
+        <div className="border-b border-gray-100 p-6">
           <h2 className="text-lg font-semibold text-gray-800">
             Scheduled Classes
           </h2>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[1000px] text-sm">
-            <thead className="bg-gray-50 text-gray-600">
+          <table className="w-full min-w-[1050px] text-sm">
+            <thead className="bg-primary-50 text-gray-700">
               <tr>
-                <th className="px-6 py-3 text-left">Topic</th>
-                <th className="px-6 py-3 text-left">Course</th>
-                <th className="px-6 py-3 text-left">Batch</th>
-                <th className="px-6 py-3 text-left">Date</th>
-                <th className="px-6 py-3 text-left">Time</th>
-                <th className="px-6 py-3 text-left">Duration</th>
-                <th className="px-6 py-3 text-left">Status</th>
-                <th className="px-6 py-3 text-left">Actions</th>
+                <th className="px-6 py-4 text-left">Topic</th>
+                <th className="px-6 py-4 text-left">Course</th>
+                <th className="px-6 py-4 text-left">Batch</th>
+                <th className="px-6 py-4 text-left">Date</th>
+                <th className="px-6 py-4 text-left">Time</th>
+                <th className="px-6 py-4 text-left">Duration</th>
+                <th className="px-6 py-4 text-left">Status</th>
+                <th className="px-6 py-4 text-left">Actions</th>
               </tr>
             </thead>
 
-            <tbody className="divide-y">
+            <tbody className="divide-y divide-gray-100">
               {classes.map((classItem) => (
-                <tr key={classItem.id} className="hover:bg-gray-50">
-                  <td className="px-6 py-4 font-medium text-gray-800">
+                <tr
+                  key={classItem.id}
+                  className="transition hover:bg-primary-50/50"
+                >
+                  <td className="px-6 py-4 font-semibold text-gray-800">
                     {classItem.topic}
                   </td>
 
@@ -131,14 +127,20 @@ const MyClasses: React.FC = () => {
 
                   <td className="px-6 py-4 text-gray-600">
                     <div className="flex items-center gap-2">
-                      <Calendar size={16} />
+                      <Calendar
+                        size={16}
+                        className="text-primary-500"
+                      />
                       {classItem.date}
                     </div>
                   </td>
 
                   <td className="px-6 py-4 text-gray-600">
                     <div className="flex items-center gap-2">
-                      <Clock size={16} />
+                      <Clock
+                        size={16}
+                        className="text-primary-500"
+                      />
                       {classItem.time}
                     </div>
                   </td>
@@ -148,39 +150,45 @@ const MyClasses: React.FC = () => {
                   </td>
 
                   <td className="px-6 py-4">
-                    <span
-                      className={`rounded-full px-3 py-1 text-xs ${getStatusStyle(
-                        classItem.status,
-                      )}`}
-                    >
-                      {classItem.status}
-                    </span>
+                    {classItem.status === 'Scheduled' && (
+                      <StatusBadge type="zoom">
+                        Zoom Live Session
+                      </StatusBadge>
+                    )}
+
+                    {classItem.status === 'Completed' && (
+                      <StatusBadge type="success">
+                        Completed
+                      </StatusBadge>
+                    )}
+
+                    {classItem.status === 'Cancelled' && (
+                      <StatusBadge type="danger">
+                        Cancelled
+                      </StatusBadge>
+                    )}
                   </td>
 
                   <td className="px-6 py-4">
                     <div className="flex gap-2">
-                      <button
+                      <ZoomButton
                         type="button"
-                        disabled={classItem.status !== 'Scheduled'}
-                        onClick={() => openZoomMeeting(classItem)}
-                        className={`flex items-center gap-2 rounded-lg px-3 py-2 ${
-                          classItem.status === 'Scheduled'
-                            ? 'bg-blue-600 text-white hover:bg-blue-700'
-                            : 'cursor-not-allowed bg-gray-100 text-gray-400'
-                        }`}
+                        disabled={
+                          classItem.status !== 'Scheduled'
+                        }
+                        onClick={() =>
+                          openZoomMeeting(classItem)
+                        }
                       >
                         <Video size={16} />
                         Join Zoom
                         <ExternalLink size={13} />
-                      </button>
+                      </ZoomButton>
 
-                      <button
-                        type="button"
-                        className="flex items-center gap-2 rounded-lg border border-gray-200 px-3 py-2 text-gray-700 hover:bg-gray-50"
-                      >
+                      <SecondaryButton type="button">
                         <Eye size={16} />
                         Details
-                      </button>
+                      </SecondaryButton>
                     </div>
                   </td>
                 </tr>

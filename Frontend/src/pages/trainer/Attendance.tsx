@@ -1,10 +1,15 @@
 import React, { useMemo, useState } from 'react';
 import {
   CheckCircle,
-  XCircle,
   Search,
   Users,
+  XCircle,
 } from 'lucide-react';
+import {
+  GlassSurface,
+  StatusBadge,
+  inputClassName,
+} from '../../components/trainer/TrainerUI';
 
 interface AttendanceRecord {
   id: number;
@@ -16,13 +21,10 @@ interface AttendanceRecord {
 const Attendance: React.FC = () => {
   const [selectedCourse, setSelectedCourse] =
     useState('Frontend Development');
-
   const [selectedBatch, setSelectedBatch] =
     useState('Batch A');
-
   const [selectedSession, setSelectedSession] =
     useState('React Components - 2026-07-15');
-
   const [searchText, setSearchText] = useState('');
 
   const attendanceRecords: AttendanceRecord[] = [
@@ -75,21 +77,22 @@ const Attendance: React.FC = () => {
   ).length;
 
   return (
-    <div>
-      <div className="mb-8">
+    <div className="space-y-8">
+      <div>
         <h1 className="text-2xl font-bold text-gray-800">
           Zoom Attendance Report
         </h1>
 
         <p className="mt-1 text-gray-500">
-          Attendance is automatically generated from Zoom
+          Attendance is automatically generated from Zoom and
+          displayed as Present or Absent.
         </p>
       </div>
 
-      <div className="mb-6 rounded-xl border border-gray-100 bg-white p-6 shadow-sm">
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+      <GlassSurface className="p-6">
+        <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
           <div>
-            <label className="mb-2 block text-sm font-medium text-gray-700">
+            <label className="mb-2 block text-sm font-semibold text-gray-700">
               Course
             </label>
 
@@ -98,7 +101,7 @@ const Attendance: React.FC = () => {
               onChange={(event) =>
                 setSelectedCourse(event.target.value)
               }
-              className="w-full rounded-lg border border-gray-300 px-4 py-2"
+              className={inputClassName}
             >
               <option>Frontend Development</option>
               <option>Java Full Stack</option>
@@ -107,7 +110,7 @@ const Attendance: React.FC = () => {
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium text-gray-700">
+            <label className="mb-2 block text-sm font-semibold text-gray-700">
               Batch
             </label>
 
@@ -116,7 +119,7 @@ const Attendance: React.FC = () => {
               onChange={(event) =>
                 setSelectedBatch(event.target.value)
               }
-              className="w-full rounded-lg border border-gray-300 px-4 py-2"
+              className={inputClassName}
             >
               <option>Batch A</option>
               <option>Batch B</option>
@@ -125,7 +128,7 @@ const Attendance: React.FC = () => {
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium text-gray-700">
+            <label className="mb-2 block text-sm font-semibold text-gray-700">
               Zoom Session
             </label>
 
@@ -134,7 +137,7 @@ const Attendance: React.FC = () => {
               onChange={(event) =>
                 setSelectedSession(event.target.value)
               }
-              className="w-full rounded-lg border border-gray-300 px-4 py-2"
+              className={inputClassName}
             >
               <option>React Components - 2026-07-15</option>
               <option>React State - 2026-07-16</option>
@@ -142,42 +145,50 @@ const Attendance: React.FC = () => {
             </select>
           </div>
         </div>
-      </div>
+      </GlassSurface>
 
-      <div className="mb-6 grid grid-cols-1 gap-4 md:grid-cols-3">
-        <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
-          <div className="flex items-center gap-3">
-            <Users className="text-blue-600" size={24} />
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+        <div className="rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-indigo-800 p-5 text-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+          <div className="flex items-center gap-4">
+            <div className="rounded-2xl bg-white/20 p-3 backdrop-blur-md">
+              <Users size={24} />
+            </div>
 
             <div>
-              <p className="text-sm text-gray-500">Total Students</p>
-              <p className="text-2xl font-bold text-gray-800">
+              <p className="text-sm text-white/80">
+                Total Students
+              </p>
+              <p className="text-2xl font-bold">
                 {attendanceRecords.length}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
-          <div className="flex items-center gap-3">
-            <CheckCircle className="text-green-600" size={24} />
+        <div className="rounded-2xl bg-gradient-to-br from-emerald-600 via-teal-600 to-teal-800 p-5 text-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+          <div className="flex items-center gap-4">
+            <div className="rounded-2xl bg-white/20 p-3 backdrop-blur-md">
+              <CheckCircle size={24} />
+            </div>
 
             <div>
-              <p className="text-sm text-gray-500">Present</p>
-              <p className="text-2xl font-bold text-gray-800">
+              <p className="text-sm text-white/80">Present</p>
+              <p className="text-2xl font-bold">
                 {presentCount}
               </p>
             </div>
           </div>
         </div>
 
-        <div className="rounded-xl border border-gray-100 bg-white p-5 shadow-sm">
-          <div className="flex items-center gap-3">
-            <XCircle className="text-red-600" size={24} />
+        <div className="rounded-2xl bg-gradient-to-br from-red-600 via-rose-600 to-red-800 p-5 text-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
+          <div className="flex items-center gap-4">
+            <div className="rounded-2xl bg-white/20 p-3 backdrop-blur-md">
+              <XCircle size={24} />
+            </div>
 
             <div>
-              <p className="text-sm text-gray-500">Absent</p>
-              <p className="text-2xl font-bold text-gray-800">
+              <p className="text-sm text-white/80">Absent</p>
+              <p className="text-2xl font-bold">
                 {absentCount}
               </p>
             </div>
@@ -185,22 +196,23 @@ const Attendance: React.FC = () => {
         </div>
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm">
-        <div className="flex flex-col justify-between gap-4 border-b p-6 md:flex-row md:items-center">
+      <GlassSurface className="overflow-hidden">
+        <div className="flex flex-col justify-between gap-4 border-b border-gray-100 p-6 md:flex-row md:items-center">
           <div>
             <h2 className="text-lg font-semibold text-gray-800">
               Attendance Results
             </h2>
 
             <p className="mt-1 text-sm text-gray-500">
-              {selectedCourse} • {selectedBatch}
+              {selectedCourse} • {selectedBatch} •{' '}
+              {selectedSession}
             </p>
           </div>
 
           <div className="relative">
             <Search
               size={18}
-              className="absolute left-3 top-2.5 text-gray-400"
+              className="absolute left-3 top-3 text-gray-400"
             />
 
             <input
@@ -210,60 +222,71 @@ const Attendance: React.FC = () => {
                 setSearchText(event.target.value)
               }
               placeholder="Search student"
-              className="w-full rounded-lg border border-gray-300 py-2 pl-10 pr-4 md:w-64"
+              className={`${inputClassName} pl-10 md:w-64`}
             />
           </div>
         </div>
 
-        <table className="w-full text-sm">
-          <thead className="bg-gray-50 text-gray-600">
-            <tr>
-              <th className="px-6 py-3 text-left">Student Name</th>
-              <th className="px-6 py-3 text-left">Employee ID</th>
-              <th className="px-6 py-3 text-left">Status</th>
-            </tr>
-          </thead>
-
-          <tbody className="divide-y">
-            {filteredRecords.map((record) => (
-              <tr key={record.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 font-medium text-gray-800">
-                  {record.studentName}
-                </td>
-
-                <td className="px-6 py-4 text-gray-600">
-                  {record.employeeId}
-                </td>
-
-                <td className="px-6 py-4">
-                  {record.status === 'Present' ? (
-                    <span className="inline-flex items-center gap-2 rounded-full bg-green-50 px-3 py-1 text-xs font-medium text-green-700">
-                      <CheckCircle size={15} />
-                      Present
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-2 rounded-full bg-red-50 px-3 py-1 text-xs font-medium text-red-700">
-                      <XCircle size={15} />
-                      Absent
-                    </span>
-                  )}
-                </td>
-              </tr>
-            ))}
-
-            {filteredRecords.length === 0 && (
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-primary-50 text-gray-700">
               <tr>
-                <td
-                  colSpan={3}
-                  className="px-6 py-10 text-center text-gray-500"
-                >
-                  No attendance records found.
-                </td>
+                <th className="px-6 py-4 text-left">
+                  Student Name
+                </th>
+                <th className="px-6 py-4 text-left">
+                  Employee ID
+                </th>
+                <th className="px-6 py-4 text-left">
+                  Attendance Status
+                </th>
               </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+
+            <tbody className="divide-y divide-gray-100">
+              {filteredRecords.map((record) => (
+                <tr
+                  key={record.id}
+                  className="transition hover:bg-primary-50/50"
+                >
+                  <td className="px-6 py-4 font-semibold text-gray-800">
+                    {record.studentName}
+                  </td>
+
+                  <td className="px-6 py-4 text-gray-600">
+                    {record.employeeId}
+                  </td>
+
+                  <td className="px-6 py-4">
+                    {record.status === 'Present' ? (
+                      <StatusBadge type="success">
+                        <CheckCircle size={15} />
+                        Present
+                      </StatusBadge>
+                    ) : (
+                      <StatusBadge type="danger">
+                        <XCircle size={15} />
+                        Absent
+                      </StatusBadge>
+                    )}
+                  </td>
+                </tr>
+              ))}
+
+              {filteredRecords.length === 0 && (
+                <tr>
+                  <td
+                    colSpan={3}
+                    className="px-6 py-12 text-center text-gray-500"
+                  >
+                    No attendance records found.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </GlassSurface>
     </div>
   );
 };
