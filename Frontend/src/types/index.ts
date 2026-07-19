@@ -86,7 +86,26 @@ export interface Session {
   startTime: string;
   durationMinutes: number;
   zoomMeetingId?: string;
+  zoomPasscode?: string;
+  zoomJoinUrl?: string;
   createdAt: string;
+}
+
+export interface ClassSession {
+  classId: number;
+  batchId: number;
+  trainerId: number;
+  title: string;
+  description?: string;
+  sessionDate: string;
+  startTime: string;
+  endTime: string;
+  meetingLink?: string;
+  zoomMeetingId?: string;
+  zoomPasscode?: string;
+  zoomJoinUrl?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 // ── Attendance ──────────────────────────────────────────────────────────
