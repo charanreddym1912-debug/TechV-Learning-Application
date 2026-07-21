@@ -20,6 +20,8 @@ import TrainerDashboard from '../pages/trainer/Dashboard';
 import MyClassesPage from '../pages/trainer/MyClasses';
 import AttendancePage from '../pages/trainer/Attendance';
 import TrainerAssignmentsPage from '../pages/trainer/Assignments';
+import AssessmentPage from '../pages/trainer/Assessment';
+import MockInterviewPage from '../pages/trainer/MockInterview';
 import GradesPage from '../pages/trainer/Grades';
 
 // Student Pages
@@ -56,6 +58,8 @@ const AppRouter: React.FC = () => {
             <Route path="/trainer/classes"     element={<MyClassesPage />} />
             <Route path="/trainer/attendance"  element={<AttendancePage />} />
             <Route path="/trainer/assignments" element={<TrainerAssignmentsPage />} />
+            <Route path="/trainer/assessment"  element={<AssessmentPage />}/>
+            <Route path="/trainer/mock-interview"  element={<MockInterviewPage />}/>
             <Route path="/trainer/grades"      element={<GradesPage />} />
           </Route>
         </Route>
