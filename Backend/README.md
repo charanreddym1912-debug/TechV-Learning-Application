@@ -1,133 +1,132 @@
-# TechV LMS Backend - Spring Boot Project Skeleton
+# LMS Backend - Microservices Version
 
-This project contains the backend core layer for the Enterprise Learning Management System (LMS). It is built using Java 17 and Spring Boot 3.5.0, persisted via a MySQL 8.4 database, and secured with Spring Security 6.4.x and JJWT 0.12.x stateless tokens.
+This is the microservices version of the original `lms-backend` monolith. It splits
+the original single Spring Boot app into 5 independently deployable services.
 
----
+## Services and ports
 
-## Technical Stack & Configuration
+| Service              | Port | Owns database    | Purpose                                    |
+|----------------------|------|------------------|---------------------------------------------|
+| eureka-server        | 8761 | -                | Service discovery registry                  |
+| api-gateway          | 8080 | -                | Single public entry point, routes requests  |
+| student-service      | 8081 | student_db       | Student registration + data                 |
+| trainer-service      | 8082 | trainer_db       | Trainer registration + data                  |
+| coordinator-service  | 8083 | coordinator_db   | Coordinator registration + data              |
+| auth-service         | 8084 | none (stateless) | Unified login across all 3 roles            |
 
-- **Java**: Version 17
-- **Spring Boot**: Version 3.5.0
-- **Build System**: Maven
-- **Security**: Spring Security (RBAC) + JJWT 0.12.6
-- **Database Persistence**: Spring Data JPA + Hibernate 6.6.x
-- **Documentation**: SpringDoc OpenAPI 2.8.5 (Swagger UI accessible at `/swagger-ui/index.html` when running)
-- **Aggregated Analytics & Monitoring**: Spring Boot Actuator
+## How login works across services (the key design decision)
 
----
+`auth-service` has **no database of its own**. When a login request comes in:
 
-## Directory Architecture
+1. It calls `student-service`'s internal endpoint `GET /internal/students/by-email/{email}`
+   over REST (resolved via Eureka - no hardcoded host:port).
+2. If not found, it calls `trainer-service`'s equivalent internal endpoint.
+3. If still not found, it calls `coordinator-service`'s equivalent internal endpoint.
+4. Whichever one responds with a match, `auth-service` verifies the password itself
+   (it has its own `PasswordEncoder`) and issues a JWT containing the user's email
+   and role as claims.
 
-The backend project structure is organized cleanly by domain modules:
+This mirrors the "Approach 1" lookup-chain design from the monolith, except each
+"repository call" is now a network call to a different service.
 
+**Internal endpoints** (`/internal/**` on each service) are NOT routed through the
+API Gateway - only `auth-service` calls them directly, service-to-service. External
+clients (Postman, a frontend) can only reach the public endpoints through the gateway
+on port 8080.
+
+## JWT secret must match everywhere
+
+Every service that validates tokens (`student-service`, `trainer-service`,
+`coordinator-service`) and the one that signs them (`auth-service`) must be
+configured with the **exact same** `app.jwt.secret` value. This is already set
+consistently in each `application.yml` via the same default value - if you change
+it in one service (e.g. via the `JWT_SECRET` environment variable), you must
+change it identically in all four.
+
+## Setup and run order
+
+### 1. Create the databases
+
+```sql
+-- run setup-databases.sql in MySQL Workbench or the mysql CLI
+SOURCE setup-databases.sql;
 ```
-src/main/java/com/org/lms/
-├── LmsApplication.java        # Main Spring Boot entrypoint
-├── config/                    # SecurityConfig, CorsConfig, OpenApiConfig
-├── security/                  # JwtAuthFilter, JwtTokenProvider, CustomUserDetailsService
-├── auth/                      # Controllers, Services, and credentials DTOs
-├── user/                      # Student & Trainer entity subclasses, repositories, controllers
-├── course/                    # Course entity, repository, service, and endpoints
-├── batch/                     # Batch entity, courses links, trainer assignments, and student enrollments
-├── session/                   # Class scheduling and Virtual classroom details
-├── attendance/                # Class attendance records (present / absent)
-├── assignment/                # Assignment CRUD, Student submissions, and Trainer grading
-├── zoom/                      # HMAC-SHA256 signature generator for Zoom Web SDK
-├── common/                    # UserRole, UserStatus, BaseEntity, and ApiResponse envelopes
-└── exception/                 # ErrorResponse and GlobalExceptionHandler advice
-```
 
----
+Update the `datasource.username` / `datasource.password` in each service's
+`application.yml` (or set `SPRING_DATASOURCE_USERNAME` / `SPRING_DATASOURCE_PASSWORD`
+environment variables) to match your actual MySQL credentials.
 
-## REST Endpoints Overview
+### 2. Build each service
 
-All endpoints (except `/api/v1/auth/login`) require a valid JWT token in the `Authorization: Bearer <JWT>` header.
+From inside each service folder:
 
-### 1. Authentication & Security
-- `POST /api/v1/auth/login` (Public) - Login with email & password, returns JWT token.
-- `POST /api/v1/auth/logout` (Authenticated) - Invalidate session client-side.
-- `POST /api/v1/auth/refresh-token` (Authenticated) - Generates a renewed JWT.
-- `GET /api/v1/auth/profile` (Authenticated) - Fetches the authenticated user profile.
-- `PUT /api/v1/auth/change-password` (Authenticated) - Modifies current user password.
-
-### 2. Student & Trainer Management (Coordinator Only)
-- `POST /api/v1/students` - Register a student.
-- `GET /api/v1/students` - List all students.
-- `GET /api/v1/students/{studentId}` - Get student by ID (accessible by Coordinators or Self).
-- `PUT /api/v1/students/{studentId}` - Update student record.
-- `DELETE /api/v1/students/{studentId}` - Delete student.
-- `POST /api/v1/trainers` - Register a trainer.
-- `GET /api/v1/trainers` - List all trainers.
-- `GET /api/v1/trainers/{trainerId}` - Get trainer by ID (accessible by Coordinators or Self).
-- `PUT /api/v1/trainers/{trainerId}` - Update trainer record.
-
-### 3. Course Management
-- `POST /api/v1/courses` (Coordinator) - Create new course.
-- `GET /api/v1/courses` (All) - List all courses.
-- `GET /api/v1/courses/{courseId}` (All) - Details of a course.
-- `PUT /api/v1/courses/{courseId}` (Coordinator) - Edit course.
-- `DELETE /api/v1/courses/{courseId}` (Coordinator) - Delete course.
-
-### 4. Batch & Enrollments Management (Coordinator Only)
-- `POST /api/v1/batches` - Create a batch linked to a course.
-- `GET /api/v1/batches` - List all batches.
-- `PUT /api/v1/batches/{batchId}` - Update a batch.
-- `DELETE /api/v1/batches/{batchId}` - Delete a batch.
-- `POST /api/v1/batches/{batchId}/trainers` - Assign a trainer to a batch.
-- `GET /api/v1/batches/{batchId}/trainers` - List all assigned trainers in a batch.
-- `DELETE /api/v1/batches/{batchId}/trainers/{trainerId}` - Remove trainer from batch.
-- `POST /api/v1/batches/{batchId}/students` - Enroll a student in a batch.
-- `GET /api/v1/batches/{batchId}/students` - List all enrolled students in a batch.
-- `DELETE /api/v1/batches/{batchId}/students/{studentId}` - Remove student from batch.
-
-### 5. Session / Virtual Classroom
-- `POST /api/v1/classes` (Coordinator) - Schedule a live class session.
-- `GET /api/v1/classes` (Coordinator) - View all class schedules.
-- `GET /api/v1/classes/trainer/{trainerId}` (Coordinator / Trainer) - Get scheduled sessions for a trainer.
-- `GET /api/v1/classes/student/{studentId}` (Coordinator / Student) - Get sessions for batches enrolled by a student.
-
-### 6. Attendance Tracking
-- `POST /api/v1/attendance` (Trainer) - Save or update attendance for students.
-- `GET /api/v1/attendance/class/{classId}` (Trainer / Coordinator) - Retrieve class attendance sheet.
-- `GET /api/v1/attendance/student/{studentId}` (Coordinator / Student Self) - Student attendance history.
-
-### 7. Assignments & Grading
-- `POST /api/v1/assignments` (Trainer) - Create an assignment for a course.
-- `GET /api/v1/assignments` (All) - List all assignments.
-- `POST /api/v1/submissions` (Student) - Upload submission file path.
-- `GET /api/v1/submissions/assignment/{assignmentId}` (Trainer) - List submissions.
-- `POST /api/v1/grades` (Trainer) - Grade student submission with score & feedback.
-
-### 8. Zoom Embedded Web SDK Integration
-- `POST /api/v1/zoom/signature` (Trainer / Student) - Generates a secure HMAC-SHA256 signature for live classes.
-  - Role resolver: Automatically flags a host role (`1`) if the requester has trainer/coordinator permissions, and attendee role (`0`) for students.
-
----
-
-## Local Development & Setup
-
-### 1. Prerequisites
-- **Java JDK 17** ( Temurin or OpenJDK )
-- **Maven** 3.9.x
-- **MySQL Server** 8.4
-
-### 2. Environment Variables
-Create the database `lms_db` in MySQL and configure access via environment variables:
 ```bash
-export SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/lms_db
-export SPRING_DATASOURCE_USERNAME=root
-export SPRING_DATASOURCE_PASSWORD=yourpassword
-
-# Zoom Credentials
-export ZOOM_CLIENT_ID=your-zoom-client-id
-export ZOOM_CLIENT_SECRET=your-zoom-client-secret
-export ZOOM_ACCOUNT_ID=your-zoom-account-id
+cd eureka-server && mvn clean install
+cd ../api-gateway && mvn clean install
+cd ../student-service && mvn clean install
+cd ../trainer-service && mvn clean install
+cd ../coordinator-service && mvn clean install
+cd ../auth-service && mvn clean install
 ```
 
-### 3. Run Application
-Run the spring boot development target:
-```bash
-mvn spring-boot:run
+(Or import each folder as a separate project into STS/IntelliJ.)
+
+### 3. Start them in this order
+
+Order matters the first time, since services register themselves with Eureka on
+startup, and the gateway/auth-service need Eureka to already be up to resolve
+other services by name.
+
+1. **eureka-server** first - wait until you see it fully started, then check
+   `http://localhost:8761` in a browser. You should see the Eureka dashboard.
+2. **student-service**, **trainer-service**, **coordinator-service** - any order,
+   can start in parallel. Watch their logs for `DiscoveryClient_STUDENT-SERVICE ...
+   registration status: 204` (or similar) confirming Eureka registration.
+3. **auth-service** - needs the three above to be registered so it can find them.
+4. **api-gateway** last - it also needs Eureka up to resolve routes.
+
+Refresh `http://localhost:8761` after everything is up - you should see all 5
+services listed as registered instances (eureka-server itself doesn't register).
+
+### 4. Test through the gateway (port 8080 - NOT the individual service ports)
+
+All external requests go through the gateway now, same paths as before:
+
 ```
-The server will boot up locally on port `8080`.
-Documentation index will be available at: `http://localhost:8080/swagger-ui/index.html`
+POST http://localhost:8080/api/v1/students/registerstudent
+POST http://localhost:8080/api/v1/trainers/registertrainer
+POST http://localhost:8080/api/v1/coordinators/registercoordinator
+POST http://localhost:8080/api/v1/auth/login
+```
+
+Request/response shapes are identical to the monolith version - existing Postman
+collections should work unchanged, just confirm you're hitting port 8080.
+
+## What changed structurally vs. the monolith
+
+- One `lms_db` database became three: `student_db`, `trainer_db`, `coordinator_db`.
+  No service can query another service's tables directly anymore.
+- `AuthService` no longer injects `StudentRepository`/`TrainerRepository`/
+  `CoordinatorRepository` directly. It injects `StudentClient`/`TrainerClient`/
+  `CoordinatorClient`, which make REST calls instead.
+- Each service is now its own deployable unit with its own `pom.xml`, own
+  `@SpringBootApplication`, own port - you could redeploy `trainer-service` alone
+  without touching the others.
+- `JwtAuthFilter` and `JwtTokenProvider` (validation-only) are duplicated into
+  each of the three data services, since each one independently needs to be able
+  to verify a token's signature for any future protected endpoints they add.
+
+## Known simplifications (worth mentioning if asked in an interview)
+
+- No API Gateway-level authentication/rate-limiting - the gateway is a pure router
+  here. In a fuller setup, JWT validation could happen once at the gateway instead
+  of independently in each service.
+- Internal endpoints (`/internal/**`) are protected only by *not* being routed
+  through the gateway - they're not additionally locked down with a shared internal
+  API key or mTLS, which a production system would add.
+- No message broker (Kafka/RabbitMQ) - all inter-service communication is
+  synchronous REST via `RestTemplate`. That's a reasonable choice for a
+  request/response flow like login, but wouldn't fit an event-driven use case.
+- No config server (Spring Cloud Config) - each service still has its own local
+  `application.yml`, so shared values (like the JWT secret) must be kept in sync
+  by hand across services.
