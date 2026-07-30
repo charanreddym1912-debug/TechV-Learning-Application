@@ -1,0 +1,223 @@
+import type {
+  Assessment,
+  Assignment,
+  Course,
+  DashboardStats,
+  LiveSession,
+  StudentProgress,
+  User,
+} from '@/types';
+
+export const mockStudent: User = {
+  id: 101,
+  name: 'Alex Johnson',
+  email: 'alex.johnson@student.edu',
+  role: 'STUDENT',
+};
+
+export const mockDashboardStats: DashboardStats = {
+  enrolledCourses: 4,
+  upcomingSessions: 2,
+  pendingAssignments: 3,
+  averageGrade: 87,
+};
+
+export const mockCourses: Course[] = [
+  {
+    id: 1,
+    title: 'Full Stack Web Development',
+    description: 'Build modern web applications with React, Spring Boot, and MySQL.',
+    trainerName: 'Dr. Sarah Chen',
+    batchName: 'Batch A — Morning',
+    progress: 72,
+    totalModules: 12,
+    completedModules: 9,
+    status: 'active',
+    thumbnailColor: 'from-indigo-600 to-purple-600',
+  },
+  {
+    id: 2,
+    title: 'Cloud Computing Fundamentals',
+    description: 'Introduction to AWS, Docker, and cloud-native architecture patterns.',
+    trainerName: 'Prof. Michael Rivera',
+    batchName: 'Batch B — Evening',
+    progress: 45,
+    totalModules: 10,
+    completedModules: 5,
+    status: 'active',
+    thumbnailColor: 'from-cyan-600 to-blue-600',
+  },
+  {
+    id: 3,
+    title: 'Data Structures & Algorithms',
+    description: 'Master core CS concepts with hands-on problem solving.',
+    trainerName: 'Dr. Emily Watson',
+    batchName: 'Batch A — Morning',
+    progress: 100,
+    totalModules: 8,
+    completedModules: 8,
+    status: 'completed',
+    thumbnailColor: 'from-emerald-600 to-teal-600',
+  },
+  {
+    id: 4,
+    title: 'DevOps & CI/CD Pipelines',
+    description: 'Automate builds, tests, and deployments with GitHub Actions.',
+    trainerName: 'James Park',
+    batchName: 'Batch C — Weekend',
+    progress: 15,
+    totalModules: 14,
+    completedModules: 2,
+    status: 'upcoming',
+    thumbnailColor: 'from-amber-600 to-orange-600',
+  },
+];
+
+export const mockLiveSessions: LiveSession[] = [
+  {
+    id: 1,
+    title: 'React Hooks Deep Dive',
+    courseName: 'Full Stack Web Development',
+    trainerName: 'Dr. Sarah Chen',
+    startTime: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
+    endTime: new Date(Date.now() + 4 * 60 * 60 * 1000).toISOString(),
+    meetingNumber: '82345678901',
+    status: 'upcoming',
+  },
+  {
+    id: 2,
+    title: 'AWS EC2 & S3 Workshop',
+    courseName: 'Cloud Computing Fundamentals',
+    trainerName: 'Prof. Michael Rivera',
+    startTime: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
+    endTime: new Date(Date.now() + 90 * 60 * 1000).toISOString(),
+    meetingNumber: '91234567890',
+    status: 'live',
+  },
+  {
+    id: 3,
+    title: 'Spring Boot REST APIs',
+    courseName: 'Full Stack Web Development',
+    trainerName: 'Dr. Sarah Chen',
+    startTime: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+    endTime: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000 + 2 * 60 * 60 * 1000).toISOString(),
+    meetingNumber: '83456789012',
+    status: 'ended',
+  },
+];
+
+export const mockAssignments: Assignment[] = [
+  {
+    id: 1,
+    title: 'Build a Todo App with React',
+    courseName: 'Full Stack Web Development',
+    description: 'Create a fully functional todo application using React hooks and local storage.',
+    dueDate: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+    maxMarks: 100,
+    status: 'pending',
+  },
+  {
+    id: 2,
+    title: 'Deploy App to AWS EC2',
+    courseName: 'Cloud Computing Fundamentals',
+    description: 'Deploy your web application to an EC2 instance and configure security groups.',
+    dueDate: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
+    maxMarks: 100,
+    status: 'submitted',
+    submittedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+  },
+  {
+    id: 3,
+    title: 'Binary Search Tree Implementation',
+    courseName: 'Data Structures & Algorithms',
+    description: 'Implement insert, search, and delete operations on a BST.',
+    dueDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+    maxMarks: 100,
+    status: 'graded',
+    submittedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+    grade: 92,
+    feedback: 'Excellent implementation with clean code structure.',
+  },
+  {
+    id: 4,
+    title: 'Docker Compose Setup',
+    courseName: 'DevOps & CI/CD Pipelines',
+    description: 'Create a multi-container application using Docker Compose.',
+    dueDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+    maxMarks: 100,
+    status: 'overdue',
+  },
+  {
+    id: 5,
+    title: 'REST API with Spring Boot',
+    courseName: 'Full Stack Web Development',
+    description: 'Build CRUD endpoints for a course management system.',
+    dueDate: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),
+    maxMarks: 100,
+    status: 'pending',
+  },
+];
+
+// Roster sizes per course — used when a trainer issues a live assessment.
+export const mockClassRosters: Record<string, number> = {
+  'Full Stack Web Development': 24,
+  'Cloud Computing Fundamentals': 18,
+  'Data Structures & Algorithms': 21,
+  'DevOps & CI/CD Pipelines': 16,
+};
+
+export const mockAssessments: Assessment[] = [
+  {
+    id: 1,
+    question: 'Which React hook is used to perform side effects?',
+    courseName: 'Full Stack Web Development',
+    type: 'mcq',
+    options: ['useState', 'useEffect', 'useMemo', 'useRef'],
+    correctOption: 1,
+    optionVotes: [3, 14, 2, 1],
+    marks: 5,
+    durationMinutes: 5,
+    status: 'closed',
+    issuedAt: new Date(Date.now() - 12 * 60 * 1000).toISOString(),
+    totalStudents: 24,
+    responses: 20,
+  },
+  {
+    id: 2,
+    question: 'HTTP is a stateless protocol.',
+    courseName: 'Full Stack Web Development',
+    type: 'truefalse',
+    options: ['True', 'False'],
+    correctOption: 0,
+    optionVotes: [11, 3],
+    marks: 2,
+    durationMinutes: 3,
+    status: 'live',
+    issuedAt: new Date(Date.now() - 60 * 1000).toISOString(),
+    totalStudents: 24,
+    responses: 14,
+  },
+];
+
+export const mockProgress: StudentProgress = {
+  overallAttendance: 88,
+  averageGrade: 87,
+  coursesCompleted: 1,
+  totalCourses: 4,
+  assignmentsSubmitted: 2,
+  totalAssignments: 5,
+  attendanceByMonth: [
+    { month: 'Jan', present: 18, absent: 2 },
+    { month: 'Feb', present: 16, absent: 3 },
+    { month: 'Mar', present: 20, absent: 1 },
+    { month: 'Apr', present: 17, absent: 2 },
+    { month: 'May', present: 19, absent: 1 },
+    { month: 'Jun', present: 14, absent: 1 },
+  ],
+  gradesByCourse: [
+    { courseName: 'Full Stack Web Development', grade: 85, maxGrade: 100 },
+    { courseName: 'Cloud Computing Fundamentals', grade: 78, maxGrade: 100 },
+    { courseName: 'Data Structures & Algorithms', grade: 92, maxGrade: 100 },
+    { courseName: 'DevOps & CI/CD Pipelines', grade: 0, maxGrade: 100 },
+  ],
+};

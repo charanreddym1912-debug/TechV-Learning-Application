@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 public class CourseRequest {
 
-    @NotBlank
+    @NotBlank(message = "Title is required")
     private String title;
 
     private String description;
@@ -22,44 +22,50 @@ public class CourseRequest {
     public CourseRequest() {}
 
     public String getTitle() {
-    	return title; 
-    	}
+        return title;
+    }
+
     public void setTitle(String title) {
-    	this.title = title; 
-    	}
+        this.title = title;
+    }
 
     public String getDescription() {
-    	return description; 
-    	}
+        return description;
+    }
+
     public void setDescription(String description) {
-    	this.description = description; 
-    	}
+        this.description = description;
+    }
 
     public String getCategory() {
-    	return category;
-    	}
+        return category;
+    }
+
     public void setCategory(String category) {
-    	this.category = category;
-    	}
+        this.category = category;
+    }
 
     public String getDuration() {
-    	return duration;
-    	}
-    public void setDuration(String duration) { 
-    	this.duration = duration;
-    	}
+        return duration;
+    }
+
+    public void setDuration(String duration) {
+        this.duration = duration;
+    }
 
     public LocalDate getStartDate() {
-    	return startDate; 
-    	}
-    public void setStartDate(LocalDate startDate) {
-    	this.startDate = startDate; 
-    	}
+        return startDate;
+    }
 
-    public LocalDate getEndDate() { 
-    	return endDate;
-    	}
-    public void setEndDate(LocalDate endDate) { 
-    	this.endDate = endDate;
-    	}
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
 }

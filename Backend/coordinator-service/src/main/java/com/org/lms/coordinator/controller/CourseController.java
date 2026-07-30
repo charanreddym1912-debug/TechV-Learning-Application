@@ -4,6 +4,7 @@ import com.org.lms.coordinator.dto.CourseRequest;
 import com.org.lms.coordinator.dto.CourseResponse;
 import com.org.lms.coordinator.dto.EnrollmentResponse;
 import com.org.lms.coordinator.service.CourseService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@SecurityRequirement(name = "bearerAuth")
 @RestController
 @RequestMapping("/api/v1/courses")
 public class CourseController {
