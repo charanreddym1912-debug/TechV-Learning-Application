@@ -1,9 +1,17 @@
 package com.org.lms.coordinator.entity;
 
+import com.org.lms.coordinator.enums.CourseStatus;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+@Getter
+@Setter
+@NoArgsConstructor
 @Entity
 @Table(name = "courses")
 public class Course {
@@ -27,6 +35,10 @@ public class Course {
     private LocalDate startDate;
     private LocalDate endDate;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private CourseStatus status;
+
     @Column(nullable = false, length = 150)
     private String createdByEmail;
 
@@ -35,8 +47,6 @@ public class Course {
 
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-
-    public Course() {}
 
     @PrePersist
     protected void onCreate() {
@@ -48,31 +58,4 @@ public class Course {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
-
-    public Long getCourseId() { return courseId; }
-    public void setCourseId(Long courseId) { this.courseId = courseId; }
-
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
-
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
-
-    public String getCategory() { return category; }
-    public void setCategory(String category) { this.category = category; }
-
-    public String getDuration() { return duration; }
-    public void setDuration(String duration) { this.duration = duration; }
-
-    public LocalDate getStartDate() { return startDate; }
-    public void setStartDate(LocalDate startDate) { this.startDate = startDate; }
-
-    public LocalDate getEndDate() { return endDate; }
-    public void setEndDate(LocalDate endDate) { this.endDate = endDate; }
-
-    public String getCreatedByEmail() { return createdByEmail; }
-    public void setCreatedByEmail(String createdByEmail) { this.createdByEmail = createdByEmail; }
-
-    public LocalDateTime getCreatedAt() { return createdAt; }
-    public LocalDateTime getUpdatedAt() { return updatedAt; }
 }
