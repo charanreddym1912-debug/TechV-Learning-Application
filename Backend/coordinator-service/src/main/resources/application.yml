@@ -1,3 +1,5 @@
+debug: true
+
 server:
   port: 8083
 
@@ -29,9 +31,7 @@ eureka:
 
 app:
   jwt:
-    # Must be IDENTICAL across every service, since auth-service signs tokens
-    # with this secret and every other service verifies them with the same key.
-    secret: ${JWT_SECRET:404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970}
+    secret: ${JWT_SECRET}
 
 logging:
   level:
