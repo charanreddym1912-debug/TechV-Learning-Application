@@ -12,17 +12,26 @@ Frontend/.env
 .vscode/
 *.iml
 *.iws
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
 *.sublime-project
 *.sublime-workspace
 
 # Maven build outputs
 Backend/target/
 **/target/
+target/
 *.class
 
 # Node / Frontend build outputs
+.vite/
 Frontend/node_modules/
 Frontend/dist/
 **/node_modules/
 **/dist/
-package-lock.json
+node_modules/
+dist/
+*.log

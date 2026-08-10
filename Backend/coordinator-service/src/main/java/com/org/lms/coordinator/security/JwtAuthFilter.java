@@ -15,7 +15,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 import java.util.Collections;
+import java.util.HexFormat;
 import java.util.List;
 
 @Component
@@ -36,29 +39,61 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         String token = getTokenFromRequest(request);
 
+        if (StringUtils.hasText(token)) {
+            log.info("Received token fingerprint: {}", tokenFingerprint(token));
+        }
+
         if (StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)) {
+
             String email = jwtTokenProvider.getUsernameFromJWT(token);
             String role = jwtTokenProvider.getRoleFromJWT(token);
 
+            log.info("JWT email: {}", email);
+            log.info("JWT role: {}", role);
+
             List<SimpleGrantedAuthority> authorities = StringUtils.hasText(role)
-                    ? Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + role))
+                    ? Collections.singletonList(
+                    new SimpleGrantedAuthority("ROLE_" + role)
+            )
                     : Collections.emptyList();
 
+            log.info("Granted authorities: {}", authorities);
+
             UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(email, null, authorities);
-            authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    new UsernamePasswordAuthenticationToken(
+                            email,
+                            null,
+                            authorities
+                    );
+
+            authentication.setDetails(
+                    new WebAuthenticationDetailsSource().buildDetails(request)
+            );
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
-
         filterChain.doFilter(request, response);
     }
 
     private String getTokenFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
-            return bearerToken.substring(7);
+            return bearerToken.substring(7).trim();
         }
         return null;
+    }
+
+    private String tokenFingerprint(String token) {
+        try {
+            byte[] hash = MessageDigest.getInstance("SHA-256")
+                    .digest(token.getBytes(StandardCharsets.UTF_8));
+
+            return HexFormat.of()
+                    .formatHex(hash)
+                    .substring(0, 12);
+
+        } catch (Exception ex) {
+            throw new IllegalStateException(ex);
+        }
     }
 }
