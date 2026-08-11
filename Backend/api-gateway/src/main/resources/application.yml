@@ -35,6 +35,11 @@ spring:
           predicates:
             - Path=/api/v1/courses/**
 
+        - id: assessment-routes
+          uri: lb://trainer-service
+          predicates:
+            - Path=/api/v1/assessments/**
+
 eureka:
   client:
     service-url:
