@@ -30,6 +30,7 @@ import MyCoursesPage from '../pages/student/MyCourses';
 import LiveClassPage from '../pages/student/LiveClass';
 import StudentAssignmentsPage from '../pages/student/Assignments';
 import ProgressPage from '../pages/student/Progress';
+import StudentAssessmentsPage from '../pages/student/Assessments';
 
 const AppRouter: React.FC = () => {
   return (
@@ -71,6 +72,7 @@ const AppRouter: React.FC = () => {
             <Route path="/student/courses"     element={<MyCoursesPage />} />
             <Route path="/student/live"        element={<LiveClassPage />} />
             <Route path="/student/assignments" element={<StudentAssignmentsPage />} />
+            <Route path="/student/assessments" element={<StudentAssessmentsPage />} />
             <Route path="/student/progress"    element={<ProgressPage />} />
           </Route>
         </Route>

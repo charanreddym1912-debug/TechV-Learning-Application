@@ -36,6 +36,7 @@ const navItems: Record<Role, NavItem[]> = {
     { label: 'My Courses',  path: '/student/courses',      icon: <BookOpen size={20} /> },
     { label: 'Live Class',  path: '/student/live',         icon: <Video size={20} /> },
     { label: 'Assignments', path: '/student/assignments',  icon: <ClipboardList size={20} /> },
+    { label: 'Assessments', path: '/student/assessments',  icon: <ClipboardCheck size={20} /> },
     { label: 'Progress',    path: '/student/progress',     icon: <BarChart3 size={20} /> },
   ],
 };

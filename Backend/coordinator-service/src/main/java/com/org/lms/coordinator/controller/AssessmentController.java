@@ -22,7 +22,7 @@ public class AssessmentController {
     }
 
     @PostMapping("/courses/{courseId}/assessments")
-    @PreAuthorize("hasRole('COORDINATOR')")
+    @PreAuthorize("hasAnyRole('TRAINER','COORDINATOR')")
     public ResponseEntity<AssessmentResponse> createAssessment(@PathVariable Long courseId,
                                                               @Valid @RequestBody AssessmentRequest request) {
         AssessmentResponse response = assessmentService.createAssessment(courseId, request);
@@ -45,7 +45,7 @@ public class AssessmentController {
     }
 
     @PutMapping("/courses/{courseId}/assessments/{assessmentId}")
-    @PreAuthorize("hasRole('COORDINATOR')")
+    @PreAuthorize("hasAnyRole('TRAINER','COORDINATOR')")
     public ResponseEntity<AssessmentResponse> updateAssessment(@PathVariable Long courseId,
                                                               @PathVariable Long assessmentId,
                                                               @Valid @RequestBody AssessmentRequest request) {
@@ -53,7 +53,7 @@ public class AssessmentController {
     }
 
     @DeleteMapping("/assessments/{assessmentId}")
-    @PreAuthorize("hasRole('COORDINATOR')")
+    @PreAuthorize("hasAnyRole('TRAINER','COORDINATOR')")
     public ResponseEntity<Void> deleteAssessment(@PathVariable Long assessmentId) {
         assessmentService.deleteAssessment(assessmentId);
         return ResponseEntity.noContent().build();

@@ -387,14 +387,14 @@ public class AssessmentService {
             }
         }
 
-        if (question.getQuestionType()
-                == QuestionType.SHORT_ANSWER) {
+        if (question.getQuestionType() == QuestionType.SHORT_ANSWER
+                || question.getQuestionType() == QuestionType.ESSAY) {
 
             if (question.getWordLimit() == null
                     || question.getWordLimit() <= 0) {
 
                 throw new IllegalArgumentException(
-                        "Word limit must be greater than 0 for a short-answer question"
+                    "Word limit must be greater than 0 for a short-answer or essay question"
                 );
             }
         }
