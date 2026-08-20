@@ -1,8 +1,8 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import {
-  LayoutDashboard, BookOpen, Users, GraduationCap, Calendar,
-  ClipboardList, BarChart3, Video, FileText, CheckSquare,
+  LayoutDashboard, BookOpen, Users, GraduationCap, Calendar,ClipboardCheck,
+  MessagesSquare,ClipboardList, BarChart3, Video, FileText, CheckSquare,
 } from 'lucide-react';
 import { useAuth } from '../../hooks/useAuth';
 import type { Role } from '../../types';
@@ -27,6 +27,8 @@ const navItems: Record<Role, NavItem[]> = {
     { label: 'My Classes',  path: '/trainer/classes',      icon: <Video size={20} /> },
     { label: 'Attendance',  path: '/trainer/attendance',   icon: <CheckSquare size={20} /> },
     { label: 'Assignments', path: '/trainer/assignments',  icon: <FileText size={20} /> },
+    { label: 'Assessments', path: '/trainer/assessment',  icon: <ClipboardCheck size={20} /> },
+    { label: 'Mock Interviews', path: '/trainer/mock-interview', icon: <MessagesSquare size={20} /> },
     { label: 'Grades',      path: '/trainer/grades',       icon: <BarChart3 size={20} /> },
   ],
   STUDENT: [
